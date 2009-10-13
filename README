@@ -1,0 +1,25 @@
+ActsAsLudia
+===========
+
+ActsAsLudiaはLudiaによるPostgreSQLの高速全文検索機能をRuby on Railsに付加
+するプラグインです．
+
+ActsAsLudiaはActiveRecordモジュールにfind_fulltextメソッドを追加します．
+
+
+example:
+
+class Article < ActiveRecord::Base
+  acts_as_ludia
+end
+
+Article.find_fulltext({:col1 => ["hoge moge", "hoho"]})
+ # => SELECT * FROM models WHERE col1 @@ '*D+ hoge moge OR hoho';
+
+Article.find_fulltext({:col1 => "hoge", :col2 => ["moge", "hoho"]}, :all => true)
+ # => SELECT * FROM models WHERE col1 @@ '*D+ hoge' OR col2 @@ '*D+ moge OR hoho';
+
+ # Snippet
+Article.find_fulltext({:col1 => "hoge moge"}, :snippet => true)
+Article.find_fulltext({:col1 => "hoge moge"}, :snippet => {:length => 45, :decorations => ['<em>', '</em>'])
+Article.find_fulltext({:col1 => "hoge moge"}, :snippet => true, :css => {:class => "other_ludia_class"})
